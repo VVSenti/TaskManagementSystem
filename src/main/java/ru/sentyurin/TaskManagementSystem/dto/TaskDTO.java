@@ -3,14 +3,21 @@ package ru.sentyurin.TaskManagementSystem.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import ru.sentyurin.TaskManagementSystem.models.Comment;
 import ru.sentyurin.TaskManagementSystem.models.Priority;
 import ru.sentyurin.TaskManagementSystem.models.Status;
 
 public class TaskDTO {
+	@NotEmpty
 	private String title;
+	@NotEmpty
 	private String description;
+	@NotNull
 	private Status status;
+	@NotNull
 	private Priority priority;
 	private String authorEmail;
 	private String executorEmail;

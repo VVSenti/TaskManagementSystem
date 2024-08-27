@@ -12,7 +12,7 @@ import ru.sentyurin.TaskManagementSystem.repositories.TaskRepository;
 import ru.sentyurin.TaskManagementSystem.util.TaskNotFoundException;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class TaskService {
 	TaskRepository taskRepository;
 

@@ -31,8 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	// stopping the csrf to make post method work
 	protected void configure(HttpSecurity http) throws Exception {
-		super.configure(http);
-		http.csrf().disable();
+//		super.configure(http);
+		http.csrf().disable()
+		.authorizeRequests().antMatchers("/auth/registration").permitAll()
+				.anyRequest().authenticated().and().httpBasic().and().sessionManagement().disable();
+				//.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		//http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Bean

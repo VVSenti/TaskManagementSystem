@@ -43,7 +43,7 @@ public class PersonController {
 
 	@GetMapping("")
 	public List<PersonDTO> getPeople() {
-		return personService.findAll().stream().map(x -> convertToPersonDTO(x)).toList();
+		return personService.findAll().stream().map(this::convertToPersonDTO).toList();
 	}
 
 	@GetMapping("/{id}")

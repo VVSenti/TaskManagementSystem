@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,18 +36,21 @@ import ru.sentyurin.TaskManagementSystem.util.TaskNotFoundException;
 @RequestMapping("/tasks")
 public class TaskController {
 
-	private TaskService taskService;
-	private PersonService personService;
-
+	private final TaskService taskService;
+	private final PersonService personService;
+	private final ModelMapper modelMapper;
+	
 	@Autowired
-	public TaskController(TaskService taskService, PersonService personService) {
+	public TaskController(TaskService taskService, PersonService personService,
+			ModelMapper modelMapper) {
 		this.taskService = taskService;
 		this.personService = personService;
+		this.modelMapper = modelMapper;
 	}
 
 	@GetMapping("")
 	public List<TaskDTO> getAllTasks() {
-		return taskService.findAll().stream().map(x -> convertToTaskDTO(x)).toList();
+		return taskService.findAll().stream().map(this::convertToTaskDTO).toList();
 	}
 
 	@GetMapping("/{id}")
@@ -66,7 +70,6 @@ public class TaskController {
 			}
 			throw new TaskNotCreatedException(errorMsg.toString());
 		}
-		System.out.println("/nASDASDASD/n");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails principal = (UserDetails) authentication.getPrincipal();
 		taskDTO.setAuthorEmail(principal.getUsername());
@@ -76,11 +79,7 @@ public class TaskController {
 	}
 
 	private TaskDTO convertToTaskDTO(Task task) {
-		TaskDTO taskDTO = new TaskDTO();
-		taskDTO.setTitle(task.getTitle());
-		taskDTO.setDescription(task.getDescription());
-		taskDTO.setStatus(task.getStatus());
-		taskDTO.setPriority(task.getPriority());
+		TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
 		taskDTO.setAuthorEmail(task.getAuthor().getEmail());
 		Person executor = task.getExecutor();
 		if (executor != null)
@@ -89,14 +88,10 @@ public class TaskController {
 	}
 
 	private Task convertToTask(TaskDTO taskDTO) {
-		Task task = new Task();
-		task.setTitle(taskDTO.getTitle());
-		task.setDescription(taskDTO.getDescription());
-		task.setStatus(taskDTO.getStatus());
-		task.setPriority(taskDTO.getPriority());
+		Task task = modelMapper.map(taskDTO, Task.class);
 		task.setAuthor(personService.findOne(taskDTO.getAuthorEmail()));
 		String executorEmail = taskDTO.getExecutorEmail();
-		if (!executorEmail.isEmpty())
+		if (executorEmail != null)
 			task.setExecutor(personService.findOne(executorEmail));
 		return task;
 	}

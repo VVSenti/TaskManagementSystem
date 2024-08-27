@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Task")
@@ -36,17 +37,17 @@ public class Task {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	@NotEmpty(message = "Status should not be empty!")
+	@NotNull(message = "Status should not be empty!")
 	private Status status;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "priority")
-	@NotEmpty(message = "Priority should not be empty!")
+	@NotNull(message = "Priority should not be empty!")
 	private Priority priority;
 
 	@ManyToOne
 	@JoinColumn(name = "author_id", referencedColumnName = "id")
-	@NotEmpty(message = "Author should not be empty!")
+	@NotNull(message = "Author should not be empty!")
 	private Person author;
 
 	@ManyToOne
