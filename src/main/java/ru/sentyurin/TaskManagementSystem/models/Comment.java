@@ -19,14 +19,38 @@ public class Comment {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "task_id", referencedColumnName = "id")
-	private Task commentedTask;
+	private Task task;
 
 	@Column(name = "text")
 	private String text;
 
 	public Comment() {
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 }

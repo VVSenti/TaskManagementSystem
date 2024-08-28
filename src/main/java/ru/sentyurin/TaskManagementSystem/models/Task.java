@@ -54,7 +54,7 @@ public class Task {
 	@JoinColumn(name = "executor_id", referencedColumnName = "id")
 	private Person executor;
 
-	@OneToMany(mappedBy = "commentedTask")
+	@OneToMany(mappedBy = "task")
 	private List<Comment> comments = new ArrayList<>();
 
 	public Task() {

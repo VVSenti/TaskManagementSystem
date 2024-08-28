@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 public class AuthenticationDTO {
 	@NotEmpty
 	private String username;
-
+	@NotEmpty
 	private String password;
 
 	public String getUsername() {
@@ -24,4 +24,11 @@ public class AuthenticationDTO {
 		this.password = password;
 	}
 
+	public AuthenticationDTO() {
+	}
+
+	public AuthenticationDTO(@NotEmpty String username, @NotEmpty String password) {
+		this.username = username;
+		this.password = password;
+	}
 }
