@@ -43,17 +43,10 @@ public class AuthController {
 
 	@PostMapping("/registration")
 	public Map<String, String> registerNewPerson(@RequestBody PersonRegistrationDTO personDTO) {
-		System.out.println(0);
 		Person person = convertToPerson(personDTO);
-		System.out.println(1);
 		personValidator.validate(person, null);
-		System.out.println(2);
-
 		registrationService.register(person);
-		System.out.println(3);
-
 		String token = jwtUtil.generateToken(person.getEmail());
-		System.out.println(4);
 		return Map.of("jwt-token", token);
 	}
 
@@ -75,7 +68,6 @@ public class AuthController {
 
 	private Person convertToPerson(PersonRegistrationDTO personDTO) {
 		Person person = modelMapper.map(personDTO, Person.class);
-
 		return person;
 	}
 

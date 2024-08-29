@@ -35,6 +35,11 @@ public class CommentService {
 		Task task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
 		return commentRepository.findByTask(task);
 	}
+	
+	@Transactional
+	public void deleteById(int id) {
+		commentRepository.deleteById(id);
+	}
 
 	@Transactional
 	public void save(Comment comment) {

@@ -23,6 +23,10 @@ public class Comment {
 	@JoinColumn(name = "task_id", referencedColumnName = "id")
 	private Task task;
 
+	@ManyToOne
+	@JoinColumn(name = "author_id", referencedColumnName = "id")
+	private Person author;
+
 	@Column(name = "text")
 	private String text;
 
@@ -37,6 +41,10 @@ public class Comment {
 		return task;
 	}
 
+	public Person getAuthor() {
+		return author;
+	}
+
 	public String getText() {
 		return text;
 	}
@@ -47,6 +55,10 @@ public class Comment {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	public void setAuthor(Person author) {
+		this.author = author;
 	}
 
 	public void setText(String text) {
