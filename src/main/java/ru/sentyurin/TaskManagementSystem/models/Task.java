@@ -130,7 +130,5 @@ public class Task {
 				+ status + ", priority=" + priority + ", author=" + author + ", executor="
 				+ executor + "]";
 	}
-	
-	
 
 }
