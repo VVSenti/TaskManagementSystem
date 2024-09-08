@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,7 +53,7 @@ public class Task {
 	@JoinColumn(name = "executor_id", referencedColumnName = "id")
 	private Person executor;
 
-	@OneToMany(mappedBy = "task")
+	@OneToMany(mappedBy = "task", orphanRemoval = true)
 	private List<Comment> comments = new ArrayList<>();
 
 	public Task() {

@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.sentyurin.TaskManagementSystem.models.Task;
-import ru.sentyurin.TaskManagementSystem.dto.PersonDTO;
 import ru.sentyurin.TaskManagementSystem.models.Person;
 import ru.sentyurin.TaskManagementSystem.repositories.PersonRepository;
 import ru.sentyurin.TaskManagementSystem.util.PersonNotFoundException;

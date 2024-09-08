@@ -1,8 +1,9 @@
 package ru.sentyurin.TaskManagementSystem.controllers;
 
-import static ru.sentyurin.TaskManagementSystem.util.ValidationErrorMessageBuilder.makeValidationError;
+import static ru.sentyurin.TaskManagementSystem.util.ValidationErrorMessageBuilder.makeValidationErrorMessage;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -20,14 +21,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.sentyurin.TaskManagementSystem.dto.TaskToShowDTO;
 import ru.sentyurin.TaskManagementSystem.dto.TaskToCreateDTO;
 import ru.sentyurin.TaskManagementSystem.dto.TaskToEditDTO;
-import ru.sentyurin.TaskManagementSystem.dto.TaskToEditByExecutorDTO;
 import ru.sentyurin.TaskManagementSystem.models.Person;
 import ru.sentyurin.TaskManagementSystem.models.Task;
 import ru.sentyurin.TaskManagementSystem.security.ValidationUtil;
@@ -71,7 +70,7 @@ public class TaskController {
 	public ResponseEntity<HttpStatus> create(@RequestBody @Valid TaskToCreateDTO taskDTO,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			throw new TaskNotCreatedException(makeValidationError(bindingResult));
+			throw new TaskNotCreatedException(makeValidationErrorMessage(bindingResult));
 		}
 		Task task = modelMapper.map(taskDTO, Task.class);
 		task.setAuthor(validationUtil.getCurrentUser());
@@ -86,7 +85,7 @@ public class TaskController {
 	public ResponseEntity<HttpStatus> edit(@PathVariable("id") int id,
 			@RequestBody @Valid TaskToEditDTO taskDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			throw new TaskNotEditedException(makeValidationError(bindingResult));
+			throw new TaskNotEditedException(makeValidationErrorMessage(bindingResult));
 		}
 		Task oldTask = taskService.findOne(id);
 		if (validationUtil.isCurrentUserTaskExecutor(oldTask)) {
@@ -172,35 +171,33 @@ public class TaskController {
 	@ExceptionHandler
 	private ResponseEntity<TaskErrorResponse> handleException(TaskNotFoundException e) {
 		TaskErrorResponse errorResponse = new TaskErrorResponse("Task hasn't been found",
-				System.currentTimeMillis());
+				new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler
 	private ResponseEntity<TaskErrorResponse> handlException(TaskNotCreatedException e) {
-		TaskErrorResponse errorResponse = new TaskErrorResponse(e.getMessage(),
-				System.currentTimeMillis());
+		TaskErrorResponse errorResponse = new TaskErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler
 	private ResponseEntity<TaskErrorResponse> handleException(TaskNotEditedException e) {
-		TaskErrorResponse errorResponse = new TaskErrorResponse(e.getMessage(),
-				System.currentTimeMillis());
+		TaskErrorResponse errorResponse = new TaskErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler
 	private ResponseEntity<PersonErrorResponse> handleException(PersonNotFoundException e) {
 		PersonErrorResponse errorResponse = new PersonErrorResponse("There is no such user!",
-				System.currentTimeMillis());
+				new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler
 	private ResponseEntity<PersonErrorResponse> handleException(AccessDeniedException e) {
 		PersonErrorResponse errorResponse = new PersonErrorResponse("Access is denied!",
-				System.currentTimeMillis());
+				new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 }

@@ -1,7 +1,8 @@
 package ru.sentyurin.TaskManagementSystem.controllers;
 
-import static ru.sentyurin.TaskManagementSystem.util.ValidationErrorMessageBuilder.makeValidationError;
+import static ru.sentyurin.TaskManagementSystem.util.ValidationErrorMessageBuilder.makeValidationErrorMessage;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -30,7 +31,7 @@ import ru.sentyurin.TaskManagementSystem.models.Comment;
 import ru.sentyurin.TaskManagementSystem.servicies.CommentService;
 import ru.sentyurin.TaskManagementSystem.servicies.PersonService;
 import ru.sentyurin.TaskManagementSystem.servicies.TaskService;
-import ru.sentyurin.TaskManagementSystem.util.AutorizationException;
+import ru.sentyurin.TaskManagementSystem.util.AuthException;
 import ru.sentyurin.TaskManagementSystem.util.CommentErrorResponse;
 import ru.sentyurin.TaskManagementSystem.util.CommentNotCreatedException;
 import ru.sentyurin.TaskManagementSystem.util.CommentNotFoundException;
@@ -69,7 +70,7 @@ public class CommentController {
 	public ResponseEntity<HttpStatus> createComment(@PathVariable("id") int id,
 			@RequestBody @Valid CommentToCreateDTO commentDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			throw new CommentNotCreatedException(makeValidationError(bindingResult));
+			throw new CommentNotCreatedException(makeValidationErrorMessage(bindingResult));
 		}
 		Comment comment = new Comment();
 		comment.setText(commentDTO.getText());
@@ -89,7 +90,7 @@ public class CommentController {
 		String authorEmail = comment.getAuthor().getEmail();
 		String userEmail = principal.getUsername();
 		if (!authorEmail.equals(userEmail))
-			throw new AutorizationException("User may delete only their own comments!");
+			throw new AuthException("User may delete only their own comments!");
 		commentService.deleteById(id);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
@@ -98,7 +99,7 @@ public class CommentController {
 	public ResponseEntity<HttpStatus> editComment(@PathVariable("id") int id,
 			@RequestBody @Valid CommentToCreateDTO commentDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			throw new CommentNotCreatedException(makeValidationError(bindingResult));
+			throw new CommentNotCreatedException(makeValidationErrorMessage(bindingResult));
 			// TODO: change exception, make it more specific?
 		}
 		Comment commentToUpdate = commentService.findOne(id);
@@ -107,7 +108,7 @@ public class CommentController {
 		String authorEmail = commentToUpdate.getAuthor().getEmail();
 		String userEmail = principal.getUsername();
 		if (!authorEmail.equals(userEmail))
-			throw new AutorizationException("User may edit only their own comments!");
+			throw new AuthException("User may edit only their own comments!");
 		commentToUpdate.setText(commentDTO.getText());
 		commentService.save(commentToUpdate);
 		return ResponseEntity.ok(HttpStatus.OK);
@@ -123,21 +124,19 @@ public class CommentController {
 	@ExceptionHandler
 	private ResponseEntity<CommentErrorResponse> handleException(CommentNotFoundException e) {
 		CommentErrorResponse errorResponse = new CommentErrorResponse("Comment hasn't been found!",
-				System.currentTimeMillis());
+				new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler
 	private ResponseEntity<CommentErrorResponse> handleException(CommentNotCreatedException e) {
-		CommentErrorResponse errorResponse = new CommentErrorResponse(e.getMessage(),
-				System.currentTimeMillis());
+		CommentErrorResponse errorResponse = new CommentErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler
-	private ResponseEntity<CommentErrorResponse> handleException(AutorizationException e) {
-		CommentErrorResponse errorResponse = new CommentErrorResponse(e.getMessage(),
-				System.currentTimeMillis());
+	private ResponseEntity<CommentErrorResponse> handleException(AuthException e) {
+		CommentErrorResponse errorResponse = new CommentErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 }

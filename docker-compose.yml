@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: "TaskManagementSystemDB"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./src/main/resources:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    restart: always
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    restart: always

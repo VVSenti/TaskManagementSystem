@@ -1,5 +1,6 @@
 package ru.sentyurin.TaskManagementSystem.controllers;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class PersonController {
 	@ExceptionHandler
 	private ResponseEntity<PersonErrorResponse> handleException(PersonNotFoundException e) {
 		PersonErrorResponse errorResponse = new PersonErrorResponse(
-				"Person hasn't been found!", System.currentTimeMillis());
+				"Person hasn't been found!", new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 }

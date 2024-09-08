@@ -1,6 +1,5 @@
 package ru.sentyurin.TaskManagementSystem.security;
 
-import org.aspectj.weaver.patterns.PerSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

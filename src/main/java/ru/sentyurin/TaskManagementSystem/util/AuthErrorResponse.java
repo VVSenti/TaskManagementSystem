@@ -2,11 +2,11 @@ package ru.sentyurin.TaskManagementSystem.util;
 
 import java.util.Date;
 
-public class PersonErrorResponse {
+public class AuthErrorResponse {
 	private String message;
 	private Date timestamp;
 
-	public PersonErrorResponse(String message, Date timestamp) {
+	public AuthErrorResponse(String message, Date timestamp) {
 		this.message = message;
 		this.timestamp = timestamp;
 	}

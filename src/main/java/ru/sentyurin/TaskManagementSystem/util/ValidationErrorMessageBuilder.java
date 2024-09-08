@@ -6,12 +6,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 public class ValidationErrorMessageBuilder {
-	public static String makeValidationError(BindingResult bindingResult) {
+	public static String makeValidationErrorMessage(BindingResult bindingResult) {
 		StringBuilder errorMsg = new StringBuilder();
 		List<FieldError> errors = bindingResult.getFieldErrors();
 		for (FieldError error : errors) {
 			errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage())
-					.append(";");
+					.append("; ");
 		}
 		return errorMsg.toString();
 	}

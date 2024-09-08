@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 
-import ru.sentyurin.TaskManagementSystem.dto.AuthenticationDTO;
+import ru.sentyurin.TaskManagementSystem.dto.PersonLoginDTO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthControllerTest {
@@ -20,7 +20,7 @@ public class AuthControllerTest {
 
 	@Test
 	void shouldReturnJWT() {
-		AuthenticationDTO authDTO = new AuthenticationDTO("sentyurinvv@gmail.com", "Asd456");
+		PersonLoginDTO authDTO = new PersonLoginDTO("sentyurinvv@gmail.com", "Asd456");
 		ResponseEntity<Map> entity = template.postForEntity("/auth/login", authDTO,
 				Map.class);		
 		Map<String, String> jwt = entity.getBody();

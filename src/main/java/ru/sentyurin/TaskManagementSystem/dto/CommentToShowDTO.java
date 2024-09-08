@@ -1,6 +1,5 @@
 package ru.sentyurin.TaskManagementSystem.dto;
 
-import javax.validation.constraints.NotNull;
 
 public class CommentToShowDTO {
 

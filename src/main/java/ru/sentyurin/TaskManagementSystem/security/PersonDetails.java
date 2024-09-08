@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ru.sentyurin.TaskManagementSystem.models.Person;
 
 public class PersonDetails implements UserDetails {
-
 	private final Person person;
 
 	public PersonDetails(Person person) {

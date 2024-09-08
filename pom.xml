@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>ru.sentyurin</groupId>
 	<artifactId>TaskManagementSystem</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>TaskManagementSystem</name>
 	<description>Test project to get a job</description>
 	<url />

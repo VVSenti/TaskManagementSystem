@@ -1,10 +1,12 @@
 package ru.sentyurin.TaskManagementSystem.util;
 
+import java.util.Date;
+
 public class CommentErrorResponse {
 	private String message;
-	private long timestamp;
+	private Date timestamp;
 
-	public CommentErrorResponse(String message, long timestamp) {
+	public CommentErrorResponse(String message, Date timestamp) {
 		this.message = message;
 		this.timestamp = timestamp;
 	}
@@ -13,7 +15,7 @@ public class CommentErrorResponse {
 		return message;
 	}
 
-	public long getTimestamp() {
+	public Date getTimestamp() {
 		return timestamp;
 	}
 }

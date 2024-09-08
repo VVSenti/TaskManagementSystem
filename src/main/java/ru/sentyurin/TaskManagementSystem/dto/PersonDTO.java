@@ -1,11 +1,8 @@
 package ru.sentyurin.TaskManagementSystem.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 public class PersonDTO {
 	
-	@Email
 	private String email;
 
 	public String getEmail() {

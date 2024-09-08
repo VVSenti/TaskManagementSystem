@@ -1,10 +1,12 @@
 package ru.sentyurin.TaskManagementSystem.util;
 
+import java.util.Date;
+
 public class TaskErrorResponse {
 	private String message;
-	private long timestamp;
+	private Date timestamp;
 
-	public TaskErrorResponse(String message, long timestamp) {
+	public TaskErrorResponse(String message, Date timestamp) {
 		this.message = message;
 		this.timestamp = timestamp;
 	}
@@ -13,7 +15,7 @@ public class TaskErrorResponse {
 		return message;
 	}
 
-	public long getTimestamp() {
+	public Date getTimestamp() {
 		return timestamp;
 	}
 
@@ -21,7 +23,7 @@ public class TaskErrorResponse {
 		this.message = message;
 	}
 
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 
