@@ -1,0 +1,774 @@
+openapi: 3.0.3
+info:
+  title: Task Management System
+  description: |-
+    This is a simple REST API for task management system.
+    
+    Some useful links:
+    
+    - [The GitHub repository](https://github.com/VVSenti/TaskManagementSystem)
+    - [The source API definition](https://github.com/VVSenti/TaskManagementSystem/blob/master/src/main/resources/openapi.yaml)
+    
+  contact:
+    email: sentyurinvv@gmail.com
+  version: 1.0.0
+
+tags:
+  - name: auth
+    description: Operations about authorization and getting JWT
+
+  - name: person
+    description: Operations about person
+
+  - name: task
+    description: Operations about task
+    
+  - name: comment
+    description: Operations about comment
+    
+paths:
+  /auth/registration:
+    post:
+      tags:
+        - auth
+      summary: Registration of a new user
+      description: Registration of a new user by email and password
+      operationId: registerNewPerson
+      requestBody:
+        description: User email and password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JWT-token'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Logging in of a user
+      description: Logging a user by email and password
+      operationId: performLogin
+      requestBody:
+        description: User email and password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JWT-token'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+
+  /people:
+    get:
+      tags:
+        - person
+      summary: Get all users' emails
+      description: Returnes all users' emails
+      operationId: getPeople
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/userEmail'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+      security:
+        - api_key: []
+                
+  /people/info:
+    get:
+      tags:
+        - person
+      summary: User info
+      description: Returnes email of the user
+      operationId: getCurrentPerson
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/userEmail'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+      security:
+        - api_key: []
+
+  /people/{userId}:
+    get:
+      tags:
+        - person
+      summary: User info
+      description: Returnes email of the user
+      operationId: getPerson
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/userEmail'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: User hasn't been found!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+  /tasks:
+    get:
+      tags:
+        - task
+      summary: Get all tasks
+      description: Returnes all tasks
+      operationId: getAllTasks
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+      security:
+        - api_key: []
+    post:
+      tags:
+        - task
+      summary: Create new task
+      description: Creation of a new task
+      operationId: createTask
+      requestBody:
+        description: Infrormaion about task, executor email is optional 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/Task'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+      security:
+        - api_key: []
+
+  /tasks/{taskId}:
+    get:
+      tags:
+        - task
+      summary: Task info
+      description: Returnes information about the task
+      operationId: getTask
+      parameters:
+        - name: taskId
+          in: path
+          description: ID of task to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Task hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - task
+      summary: Delete task
+      description: Deletes the task
+      operationId: deleteTask
+      parameters:
+        - name: taskId
+          in: path
+          description: ID of task to return
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Task hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+    patch:
+      tags:
+        - task
+      summary: Edit task
+      description: Edit information about task
+      operationId: editTask
+      requestBody:
+        description: Information about the task that should be edited. You can leave out fields that will not be changed.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/Task'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '403':
+          description: Only author and executor may edit the task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Task hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+  /tasks/author:
+    get:
+      tags:
+        - task
+      summary: Get all tasks created by the author
+      description: Returnes all tasks created by the author with specified id
+      operationId: getAllTasksOfAuthor
+      parameters:
+        - name: id
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: User with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+  /tasks/executor:
+    get:
+      tags:
+        - task
+      summary: Get all tasks executing by the user
+      description: Get all tasks executing by the user with specified id
+      operationId: getAllTasksOfExecutor
+      parameters:
+        - name: id
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: User with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+  /tasks/{taskId}/comments:
+    get:
+      tags:
+        - comment
+      summary: Get all comments for task
+      description: Get all comments for task with specified id
+      operationId: getCommentsForTask
+      parameters:
+        - name: taskId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Task with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+    post:
+      tags:
+        - comment
+      summary: Create new comment for task
+      description: Creates new comment for task with specified id
+      operationId: createComment
+      parameters:
+        - name: taskId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Comment text
+        content:
+          application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                    example: "Very interesting task!"
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Task with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+
+  /comments/{commentId}:
+    get:
+      tags:
+        - comment
+      summary: Get comment
+      description: Get comment with specified id
+      operationId: getComment
+      parameters:
+        - name: commentId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+                  
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Comment with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+    patch:
+      tags:
+        - comment
+      summary: Edit comment
+      description: Edit comment with specified id
+      operationId: editComment
+      parameters:
+        - name: commentId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '403':
+          description: User may edit only their own comments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Comment with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+    delete:
+      tags:
+        - comment
+      summary: Delete comment
+      description: Delete comment with specified id
+      operationId: deleteComment
+      parameters:
+        - name: commentId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OK"
+        '401':
+          description: The request is unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/unauthorized'
+        '404':
+          description: Comment with such id hasn't been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/badRequest'
+      security:
+        - api_key: []
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        title:
+          type: string
+          example: API documentation
+        description:
+          type: string
+          example: Use Open API!
+        status:
+          type: string
+          description: Task status
+          enum:
+            - Running
+            - Waiting
+            - Done
+        priority:
+          type: string
+          description: Task priority
+          enum:
+            - High
+            - Medium
+            - Low
+        authorEmail:
+          type: string
+          description: E-mail of a user how are doing this task
+          example: kakapo@gmail.com
+        executorEmail:
+          type: string
+          description: E-mail of a user how are doing this task
+          example: parrot@gmail.com
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        taskId:
+          type: integer
+          format: int32
+          example: 2
+        authorId:
+          type: integer
+          format: int32
+          example: 3
+        text:
+          type: string
+          example: Such a cool task!
+    Person:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: password123
+  requestBodies:
+    Task:
+      type: object
+      properties:
+        title:
+          type: string
+          example: API documentation
+        description:
+          type: string
+          example: Use Open API!
+        status:
+          type: string
+          description: Task status
+          enum:
+            - Running
+            - Waiting
+            - Done
+        priority:
+          type: string
+          description: Task priority
+          enum:
+            - High
+            - Medium
+            - Low
+        executorEmail:
+          type: string
+          description: E-mail of a user how are doing this task
+          exampl: parrot@gmail.com
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: Authorization
+      in: header
+  responses:
+    JWT-token:
+      type: object
+      properties:
+        jwt-token:
+          type: string
+    userEmail:
+      type: object
+      description: user email
+      properties:
+        email:
+          type: string
+          example: kakapo@gmail.com
+    userEmailArray:
+      description: List of users' emails
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/responses/userEmail'
+    badRequest:
+      type: object
+      description: Incorrect request body
+      properties:
+        message:
+          type: string
+          example: Error description
+        timestamp:
+          type: string
+          example: 2024-03-08T20:00:53.097+00:00
+    unauthorized:
+      type: object
+      description: Unauthorizes request
+      properties:
+        timestamp:
+          type: string
+          example: 2024-03-08T20:03:40.190+00:00
+        status:
+          type: integer
+          example: 401
+        error:
+          type: string
+          example: Unauthorized
+        path:
+          type: string
+          example: /path

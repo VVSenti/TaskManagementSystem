@@ -35,6 +35,8 @@ import ru.sentyurin.TaskManagementSystem.util.AuthException;
 import ru.sentyurin.TaskManagementSystem.util.CommentErrorResponse;
 import ru.sentyurin.TaskManagementSystem.util.CommentNotCreatedException;
 import ru.sentyurin.TaskManagementSystem.util.CommentNotFoundException;
+import ru.sentyurin.TaskManagementSystem.util.TaskErrorResponse;
+import ru.sentyurin.TaskManagementSystem.util.TaskNotFoundException;
 
 @RestController
 @RequestMapping
@@ -138,5 +140,12 @@ public class CommentController {
 	private ResponseEntity<CommentErrorResponse> handleException(AuthException e) {
 		CommentErrorResponse errorResponse = new CommentErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler
+	private ResponseEntity<TaskErrorResponse> handleException(TaskNotFoundException e) {
+		TaskErrorResponse errorResponse = new TaskErrorResponse("Task hasn't been found",
+				new Date());
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 }

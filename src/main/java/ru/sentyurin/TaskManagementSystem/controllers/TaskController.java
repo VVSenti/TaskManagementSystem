@@ -67,7 +67,7 @@ public class TaskController {
 	}
 
 	@PostMapping("/tasks")
-	public ResponseEntity<HttpStatus> create(@RequestBody @Valid TaskToCreateDTO taskDTO,
+	public ResponseEntity<HttpStatus> createTask(@RequestBody @Valid TaskToCreateDTO taskDTO,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			throw new TaskNotCreatedException(makeValidationErrorMessage(bindingResult));
@@ -82,7 +82,7 @@ public class TaskController {
 	}
 
 	@PatchMapping("/tasks/{id}")
-	public ResponseEntity<HttpStatus> edit(@PathVariable("id") int id,
+	public ResponseEntity<HttpStatus> editTask(@PathVariable("id") int id,
 			@RequestBody @Valid TaskToEditDTO taskDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			throw new TaskNotEditedException(makeValidationErrorMessage(bindingResult));

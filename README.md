@@ -6,6 +6,8 @@
 
 Доступ к API аутентифицирован с помощью JWT токена. 
 
+Open API документация находится в папке src/main/resources.
+
 Для локального запуска в Docker контейнере в корневой папке находится файл docker-compose.yml.
 
 Стек: Spring Framework (Boot, Security, Data JPA), PostgresQL.

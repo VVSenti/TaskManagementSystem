@@ -30,9 +30,8 @@ public class PersonValidator implements Validator {
 			personService.findOne(person.getEmail());
 		} catch (PersonNotFoundException e) {
 			return;
-		}		
-		errors.rejectValue("username", "", "Such user already exists!");
-		
+		}
+		throw new AuthException("Such user already exists!");
+//		errors.rejectValue("username", "", "Such user already exists!");
 	}
-
 }

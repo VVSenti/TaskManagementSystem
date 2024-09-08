@@ -31,7 +31,7 @@ public class PersonController {
 		this.personService = personService;
 	}
 
-	@GetMapping("/current")
+	@GetMapping("/info")
 	public PersonDTO getCurrentPerson() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {

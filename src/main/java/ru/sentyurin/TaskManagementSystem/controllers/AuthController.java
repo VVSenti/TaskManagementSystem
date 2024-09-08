@@ -64,8 +64,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public Map<String, String> performLogin(@RequestBody @Valid PersonLoginDTO authenticationDTO,
-			BindingResult bindingResult) {
+	public ResponseEntity<Map<String, String>> performLogin(
+			@RequestBody @Valid PersonLoginDTO authenticationDTO, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			throw new AuthException(makeValidationErrorMessage(bindingResult));
 		}
@@ -74,11 +74,12 @@ public class AuthController {
 		try {
 			authenticationManager.authenticate(authInputToken);
 		} catch (BadCredentialsException e) {
-			return Map.of("message", "Incorrect email or password!");
+			return new ResponseEntity<>(Map.of("message", "Incorrect email or password!"),
+					HttpStatus.BAD_REQUEST);
 		}
 
 		String token = jwtUtil.generateToken(authenticationDTO.getEmail());
-		return Map.of("jwt-token", token);
+		return new ResponseEntity<>(Map.of("jwt-token", token), HttpStatus.OK);
 	}
 
 	private Person convertToPerson(PersonRegistrationDTO personDTO) {
@@ -88,8 +89,7 @@ public class AuthController {
 
 	@ExceptionHandler
 	private ResponseEntity<AuthErrorResponse> handleException(AuthException e) {
-		AuthErrorResponse errorResponse = new AuthErrorResponse(e.getMessage(),
-				new Date());
+		AuthErrorResponse errorResponse = new AuthErrorResponse(e.getMessage(), new Date());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
